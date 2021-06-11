@@ -1,8 +1,7 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.pic {
+  width: 200px;
+  background-color: red;
+  object-fit: cover;
+  transition: all .3s ease;
 }
 
-a {
-  color: #00B7FF;
-}
