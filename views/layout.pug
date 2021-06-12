@@ -7,4 +7,21 @@ html(lang="en")
     link(rel='stylesheet', href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css", integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x", crossorigin="anonymous")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    div(class="container-fluid header-wrapper")
+      header(class="row")
+        div(class="col-7 d-flex justify-content-center align-items-center")
+          span(class="logo") GamesBox
+        div(class="col-5")
+          div(class="d-flex justify-content-between align-items-center h-100 nav-links")
+            div(class="d-flex flex-column justify-content-center align-items-start game-links") GAMES
+              a(href="/inventory/games") ALL GAMES
+              a(href="/inventory/game/create") ADD GAME
+            div(class="d-flex flex-column justify-content-center align-items-start game-links") PLATFORMS
+              a(href="/inventory/platforms") ALL PLATFORMS
+              a(href="/inventory/platform/create") ADD PLATFORM  
+            div(class="d-flex flex-column justify-content-center align-items-start game-links") CATEGORIES
+              a(href="/inventory/categories") ALL CATEGORIES
+              a(href="/inventory/category/create") ADD CATEGORY 
+
+
     block content

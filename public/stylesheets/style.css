@@ -1,7 +1,74 @@
-.pic {
-  width: 200px;
-  background-color: red;
-  object-fit: cover;
-  transition: all .3s ease;
+@import url('https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Walter+Turncoat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --main: rgb(78, 78, 253);
+  --light: #bce784;
+  --text-dark: rgb(36, 36, 129);
+  --text-light: rgb(249, 249, 249);
+  --body: #f9f9f9;
+
+  --c1: #BCE784;
+  --c2: #5DD39E;
+  --c3: #348AA7;
+  --c4: #525174;
+  --c5: #513B56;
 }
+
+.palette {
+  color: #BCE784;
+  color: #5DD39E;
+  color: #348AA7;
+  color: #525174;
+  color: #513B56;
+}
+
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  background-color: var(--c1);
+  color: var(--c5);
+}
+
+/* LAYOUT */
+.header-wrapper {
+  background-color: var(--c1);
+  border-bottom: 3px solid var(--c4);
+}
+
+.logo {
+  font-size: 3.5rem;
+  font-weight: 700;
+  font-family: 'Walter Turncoat', cursive;
+}
+
+.nav-links {
+  padding: 1rem 0;
+  padding-right: 4rem;
+  line-height: 18px;
+  font-weight: 900;
+
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--c3);
+  font-size: .7rem;
+  font-weight: 600;
+}
+
+
+
+/* INDEX PAGE */
+.welcome-wrapper {
+  height: 100vh;
+}
+
+.welcome {
+}
+
 
