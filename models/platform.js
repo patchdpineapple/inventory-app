@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 let PlatformSchema = new Schema({
     name: { type: String, required: true },

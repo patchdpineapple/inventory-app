@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 
 let GameSchema = new Schema({
     title: { type: String, required: true },
@@ -8,9 +8,9 @@ let GameSchema = new Schema({
     price: { type: Number, min: 0, required: true },
     status: { type: String, required: true, enum: ["Available", "Out of stock"] },
     developer: { type: String, },
-    release: { type: String },
+    release: { type: Date },
     platform: { type: Schema.Types.ObjectId, ref: "Platform", required: true },
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    category: [{ type: Schema.Types.ObjectId, ref: "Category"}],
     image: { type: String },
 });
 
