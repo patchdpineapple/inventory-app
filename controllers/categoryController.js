@@ -4,7 +4,7 @@ var Game = require('../models/game');
 const async = require("async");
 
 // Display list of all categories.
-exports.category_list = function(req, res) {
+exports.category_list = function(req, res, next) {
     Category.find()
     .exec(function(err, category_list) {
         if(err) { return next(err); }
@@ -17,7 +17,7 @@ exports.category_list = function(req, res) {
 };
 
 // Display detail page for a specific category.
-exports.category_detail = function(req, res) {
+exports.category_detail = function(req, res, next) {
     async.parallel({
         category: function(callback) {
             Category.findById(req.params.id).exec(callback);
@@ -41,7 +41,7 @@ exports.category_detail = function(req, res) {
 
 // Display category create form on GET.
 exports.category_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category create GET');
+    res.render("category_form", { title: "Add Category" });
 };
 
 // Handle category create on POST.

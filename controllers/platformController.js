@@ -4,7 +4,7 @@ var Game = require('../models/game');
 const async = require("async");
 
 // Display list of all platforms.
-exports.platform_list = function(req, res) {
+exports.platform_list = function(req, res, next) {
     Platform.find()
     .exec(function(err, platform_list) {
         if(err) { return next(err); }

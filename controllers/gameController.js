@@ -6,8 +6,9 @@ exports.index = function(req, res) {
 
 // Display list of all games.
 exports.game_list = function(req, res, next) {
-    Game.find({}, "title platform image")
+    Game.find({}, "title platform category image")
     .populate("platform")
+    .populate("category")
     .exec(function(err, game_list) {
         if(err) { return next(err); }
         //Success
@@ -20,7 +21,7 @@ exports.game_list = function(req, res, next) {
 };
 
 // Display detail page for a specific game.
-exports.game_detail = function(req, res) {
+exports.game_detail = function(req, res, next) {
     Game.findById(req.params.id)
     .populate("platform")
     .populate("category")
