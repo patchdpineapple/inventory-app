@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  section(class="container-fluid content-wrapper game-detail")
+    div(class="container")
+        div.pb-4(class="row")
+            div(class="col-12 ")
+                h1.platform-detail-title.detail-title.pb-3 #{platform.name}
+                div.game-details.mt-3 #[h4 All #{platform.name} games]
+                    ul.all-list.ps-0
+                        each game in game_list
+                            li.mb-1 
+                                a(href=game.url) #{game.title} 
+                                | (#{game.platform.name})
+
+                        else
+                            li There are no games.
+                
+                hr
+                p
+                    a(href=platform.url+"/delete") Delete Platform
+                p
+                    a(href=platform.url+"/update") Update Platform
+
+     

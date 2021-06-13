@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  section(class="container-fluid content-wrapper all-platforms")
+    div(class="container")
+        div(class="row")
+            div(class="col-12 ")
+                h1 All Games
+                ul.game-list.all-list.ps-0
+                    each game in game_list
+                        li.mb-1 
+                            a(href=game.url) #{game.title} 
+                            | (#{game.platform.name})
+
+                    else
+                        li There are no games.
+     

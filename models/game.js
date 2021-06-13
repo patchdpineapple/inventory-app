@@ -1,3 +1,5 @@
+const { DateTime } = require("luxon");
+
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -12,6 +14,14 @@ let GameSchema = new Schema({
     platform: { type: Schema.Types.ObjectId, ref: "Platform", required: true },
     category: [{ type: Schema.Types.ObjectId, ref: "Category"}],
     image: { type: String },
+});
+
+GameSchema
+.virtual("release_formatted")
+.get(function() {
+    return this.release ? 
+    DateTime.fromJSDate(this.release).toLocaleString(DateTime.DATE_MED) 
+    : "";
 });
 
 GameSchema

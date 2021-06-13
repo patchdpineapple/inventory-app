@@ -8,20 +8,20 @@ html(lang="en")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     div(class="container-fluid header-wrapper")
-      header(class="row")
-        div(class="col-7 d-flex justify-content-center align-items-center")
-          span(class="logo") GamesBox
-        div(class="col-5")
-          div(class="d-flex justify-content-between align-items-center h-100 nav-links")
-            div(class="d-flex flex-column justify-content-center align-items-start game-links") GAMES
-              a(href="/inventory/games") ALL GAMES
-              a(href="/inventory/game/create") ADD GAME
-            div(class="d-flex flex-column justify-content-center align-items-start game-links") PLATFORMS
-              a(href="/inventory/platforms") ALL PLATFORMS
-              a(href="/inventory/platform/create") ADD PLATFORM  
-            div(class="d-flex flex-column justify-content-center align-items-start game-links") CATEGORIES
-              a(href="/inventory/categories") ALL CATEGORIES
-              a(href="/inventory/category/create") ADD CATEGORY 
-
-
+      div(class="container")
+        header(class="row d-flex justify-content-center")
+          div(class="col-12 col-lg-7 d-flex justify-content-center align-items-center")
+            a.logo-link(href="/") #[span.logo GamesBox]
+          div(class="col-12 col-sm-8 col-lg-5 d-flex justify-content-center align-items-center nav-links pb-4 pb-lg-0")
+              div(class="d-flex flex-column justify-content-center align-items-start game-links") GAMES
+                a(href="/inventory/games") ALL GAMES
+                a(href="/inventory/game/create") ADD GAME
+              div(class="d-flex flex-column justify-content-center align-items-start game-links") PLATFORMS
+                a(href="/inventory/platforms") ALL PLATFORMS
+                a(href="/inventory/platform/create") ADD PLATFORM  
+              div(class="d-flex flex-column justify-content-center align-items-start game-links") CATEGORIES
+                a(href="/inventory/categories") ALL CATEGORIES
+                a(href="/inventory/category/create") ADD CATEGORY 
+    
     block content
+    

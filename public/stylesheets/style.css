@@ -1,8 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Walter+Turncoat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+
+/* 
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+$container-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1320px
+);
+
+*/
 :root {
   --main: rgb(78, 78, 253);
   --light: #bce784;
@@ -17,16 +35,17 @@
   --c5: #513B56;
 }
 
-.palette {
-  color: #BCE784;
-  color: #5DD39E;
-  color: #348AA7;
-  color: #525174;
-  color: #513B56;
-}
-
 * {
   font-family: 'Montserrat', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: var(--c3);
+}
+
+ul, ol {
+  list-style: none;
 }
 
 body {
@@ -40,6 +59,14 @@ body {
   border-bottom: 3px solid var(--c4);
 }
 
+.logo-link {
+  color: inherit;
+}
+
+.logo-link:hover {
+  color: inherit;
+}
+
 .logo {
   font-size: 3.5rem;
   font-weight: 700;
@@ -47,28 +74,41 @@ body {
 }
 
 .nav-links {
-  padding: 1rem 0;
-  padding-right: 4rem;
   line-height: 18px;
   font-weight: 900;
-
 }
 
 .nav-links a {
-  text-decoration: none;
-  color: var(--c3);
   font-size: .7rem;
   font-weight: 600;
 }
 
-
+.game-links {
+  padding: 0 1rem;
+  white-space: nowrap;
+}
 
 /* INDEX PAGE */
-.welcome-wrapper {
-  height: 100vh;
+.content-wrapper {
+  margin-top: 4rem;
 }
 
-.welcome {
+.welcome h1{
+  font-size: 4rem;
+  margin-bottom: 0;
+  line-height: .7;
 }
+
+/* GAME VIEW */
+/* Game List */
+.all-list li a {
+  font-weight: 700;
+}
+/* GAME DETAIL */
+.detail-title {
+  font-size: 4rem;
+}
+
+
 
 

@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  section(class="container-fluid content-wrapper game-detail")
+    div(class="container")
+        div.pb-4(class="row")
+            div(class="col-12 ")
+                h1.game-detail-title.detail-title.pb-3 #{game.title}
+                div 
+                    div.pb-3
+                        strong.h3 Price: $#{game.price}
+                    div.pb-3
+                        if game.status == "Available"
+                            strong.h3 Status: #[span.text-success #{game.status}]
+                        else   
+                            strong.h3 Status: #[span.text-danger #{game.status}]
+
+                div.game-details.mt-3 #[h3 GAME DETAILS]
+                    div.pb-3
+                        strong Platform: 
+                            a(href=game.platform.url) #{game.platform.name}
+                    div.pb-3
+                        strong Categories: &nbsp;
+                            each category in game.category
+                                a.me-3(href=category.url) #{category.name}
+                    div.pb-3
+                        p.m-0 #[strong Developer:] &nbsp;
+                            span #{game.developer}
+                    div.pb-3
+                        p.m-0 #[strong Release:] &nbsp;
+                            span #{game.release_formatted}
+                    div.pb-3
+                        strong Description: 
+                        p #{game.description}
+                
+                hr
+                p
+                    a(href=game.url+"/delete") Delete Game
+                p
+                    a(href=game.url+"/update") Update Game
+
+     

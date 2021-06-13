@@ -1,17 +1,42 @@
 var Category = require('../models/category');
+var Game = require('../models/game');
 
-exports.index = function(req, res) {
-    res.send('NOT IMPLEMENTED: Site Home Page');
-};
+const async = require("async");
 
 // Display list of all categories.
 exports.category_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category list');
+    Category.find()
+    .exec(function(err, category_list) {
+        if(err) { return next(err); }
+        //Success
+        category_list.sort((a,b) => {
+            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+        });
+        res.render("category_list", { title: "All Categories", category_list: category_list});
+    });
 };
 
 // Display detail page for a specific category.
 exports.category_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category detail: ' + req.params.id);
+    async.parallel({
+        category: function(callback) {
+            Category.findById(req.params.id).exec(callback);
+        },
+        game_list: function(callback) {
+            Game.find({"category": req.params.id}, "title platform image")
+                .populate("platform")
+                .exec(callback);
+        },
+    }, function(err, results){
+        if(err) { return next(err);}
+        if(results.category == null) {
+            var err = new Error("Category not found");
+            err.status = 404;
+            return next(err);
+        }
+        //Success
+        res.render("category_detail", { title: "Category detail", category: results.category, game_list: results.game_list  });
+    });
 };
 
 // Display category create form on GET.

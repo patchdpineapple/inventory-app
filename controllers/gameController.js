@@ -5,13 +5,31 @@ exports.index = function(req, res) {
 };
 
 // Display list of all games.
-exports.game_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game list');
+exports.game_list = function(req, res, next) {
+    Game.find({}, "title platform image")
+    .populate("platform")
+    .exec(function(err, game_list) {
+        if(err) { return next(err); }
+        //Success
+        game_list.sort((a,b) => {
+            return (a.title < b.title) ? -1 : (a.title > b.title) ? 1 : 0;
+        });
+        res.render("game_list", { title: "All Games", game_list: game_list});
+
+    });
 };
 
 // Display detail page for a specific game.
 exports.game_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game detail: ' + req.params.id);
+    Game.findById(req.params.id)
+    .populate("platform")
+    .populate("category")
+    .exec(function(err, game) {
+        if(err) { return next(err); }
+        //Success
+        res.render("game_detail", { title: game.title, game: game});
+
+    });
 };
 
 // Display game create form on GET.
