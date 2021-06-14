@@ -1,3 +1,5 @@
+const { body, validationResult } = require("express-validator");
+
 var Category = require('../models/category');
 var Game = require('../models/game');
 
@@ -34,7 +36,11 @@ exports.category_detail = function(req, res, next) {
             err.status = 404;
             return next(err);
         }
-        //Success
+        // Success
+        // Sort game list
+        results.game_list.sort((a,b) => {
+            return (a.title < b.title) ? -1 : (a.title > b.title) ? 1 : 0;
+        });
         res.render("category_detail", { title: "Category detail", category: results.category, game_list: results.game_list  });
     });
 };
@@ -45,13 +51,49 @@ exports.category_create_get = function(req, res) {
 };
 
 // Handle category create on POST.
-exports.category_create_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category create POST');
-};
+exports.category_create_post = [
+
+    //validate and sanitize
+    body("name", "Name not found").trim().isLength({min:1}).escape(),
+
+    //process request
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        //create new model instance
+        const category = new Category({
+            name: req.body.name
+        });
+
+        if(!errors.isEmpty()) {
+            res.render("category_form", { title: "Add Category", category: category, errors: errors.array()});
+            return;
+        }
+        else {
+            //find if category name already exists
+            Category.findOne({"name":req.body.name})
+            .exec(function(err, found_category) {
+                if(err) { return next(err); }
+                if(found_category) {
+                    res.redirect(found_category.url);
+                } else {
+                    category.save(function(err){
+                        if(err) { return next(err); }
+                        //Save success. Redirect to detail page
+                        res.redirect(category.url);
+
+                    });
+                }
+
+            });
+        }
+
+    }
+];
 
 // Display category delete form on GET.
 exports.category_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category delete GET');
+    res.render("category_delete", { title: "Delete post" });
 };
 
 // Handle category delete on POST.

@@ -109,9 +109,17 @@ body {
   font-size: 4rem;
 }
 
-/* Category Form */
-.category-submit {
+
+/* Game Form */
+#price {
+  width: 100px;
 }
+
+#status {
+  width: 200px;
+}
+/* Category Form */
+
 
 
 

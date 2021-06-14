@@ -1,3 +1,5 @@
+const { body, validationResult } = require("express-validator");
+
 var Platform = require('../models/platform');
 var Game = require('../models/game');
 
@@ -35,19 +37,59 @@ exports.platform_detail = function(req, res, next) {
             return next(err);
         }
         //Success
+        // Sort game list
+        results.game_list.sort((a,b) => {
+            return (a.title < b.title) ? -1 : (a.title > b.title) ? 1 : 0;
+        });
         res.render("platform_detail", { title: "Platform detail", platform: results.platform, game_list: results.game_list  });
     });
 };
 
 // Display platform create form on GET.
 exports.platform_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform create GET');
+    res.render("platform_form", { title: "Add Platform" });
 };
 
 // Handle platform create on POST.
-exports.platform_create_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform create POST');
-};
+exports.platform_create_post = [
+
+    //validate and sanitize
+    body("name", "Name not found").trim().isLength({min:1}).escape(),
+
+    //process request
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        //create new model instance
+        const platform = new Platform({
+            name: req.body.name
+        });
+
+        if(!errors.isEmpty()) {
+            res.render("platform_form", { title: "Add Category", platform: platform, errors: errors.array()});
+            return;
+        }
+        else {
+            //find if category name already exists
+            Platform.findOne({"name":req.body.name})
+            .exec(function(err, found_platform) {
+                if(err) { return next(err); }
+                if(found_platform) {
+                    res.redirect(found_platform.url);
+                } else {
+                    platform.save(function(err){
+                        if(err) { return next(err); }
+                        //Save success. Redirect to detail page
+                        res.redirect(platform.url);
+
+                    });
+                }
+
+            });
+        }
+
+    }
+];
 
 // Display platform delete form on GET.
 exports.platform_delete_get = function(req, res) {

@@ -25,6 +25,14 @@ GameSchema
 });
 
 GameSchema
+.virtual("release_form")
+.get(function() {
+    return this.release ? 
+    DateTime.fromJSDate(this.release).toISODate() 
+    : "";
+});
+
+GameSchema
 .virtual("url")
 .get(function() {
     return "/inventory/game/" + this._id;
