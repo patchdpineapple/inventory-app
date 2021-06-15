@@ -92,13 +92,58 @@ exports.platform_create_post = [
 ];
 
 // Display platform delete form on GET.
-exports.platform_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform delete GET');
+exports.platform_delete_get = function(req, res, next) {
+    async.parallel({
+        platform: function(callback) {
+            Platform.findById(req.params.id).exec(callback);
+        }, 
+        game_list: function(callback) {
+            Game.find({"platform": req.params.id}, "title platform image")
+                .populate("platform")
+                .exec(callback);
+        }
+    }, function(err, results) {
+        if(err) { return next(err);}
+        if(results.platform == null) {
+            var err = new Error("Platform not found");
+            err.status = 404;
+            return next(err);
+        }
+        // Success
+        // Sort game list
+        results.game_list.sort((a,b) => {
+            return (a.title < b.title) ? -1 : (a.title > b.title) ? 1 : 0;
+        });
+        res.render("platform_delete", { title: "Delete Platform", platform: results.platform, game_list: results.game_list  });
+    });
 };
 
 // Handle platform delete on POST.
-exports.platform_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform delete POST');
+exports.platform_delete_post = function(req, res, next) {
+    async.parallel({
+        platform: function(callback) {
+            Platform.findById(req.body.platformid).exec(callback);
+        }, 
+        game_list: function(callback) {
+            Game.find({"platform": req.body.platformid}, "title platform image")
+                .populate("platform")
+                .exec(callback);
+        }
+    }, function(err, results) {
+        if(err) { return next(err);}
+        // Success
+        if(results.game_list.length > 0) {
+            // Platform has games, render back delete page
+            res.render("platform_delete", { title: "Delete Platform", platform: results.platform, game_list: results.game_list  });
+        } else {
+            Platform.findByIdAndRemove(req.body.platformid, function deleteCategory(err) {
+                if(err) { return next(err); }
+                // Success, redirect to all categories page
+                res.redirect("/inventory/platforms");
+            });
+        }
+        
+    });
 };
 
 // Display platform update form on GET.
