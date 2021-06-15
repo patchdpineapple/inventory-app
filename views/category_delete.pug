@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  section(class="container-fluid content-wrapper game-detail")
+    div(class="container")
+        div.pb-4(class="row")
+            div(class="col-12 ")
+                h1.category-detail-title.detail-title.pb-3 Delete #{category.name}
+                if game_list.length > 0
+                    p #[strong Remove this category from these games first before deleting]
+                    ul.all-list.ps-0
+                        each game in game_list
+                            li.mb-1 
+                                a(href=game.url) #{game.title} 
+                                | (#{game.platform.name})
+
+                else
+                    p Are you sure you want to delete this category?
+                    form(action="" method="POST")
+                        div.form-group
+                            input#categoryid.form-control(type="hidden" name="categoryid" value=category._id)
+                        button.btn.btn-primary(type="submit") Delete
+                
+
+     

@@ -92,13 +92,60 @@ exports.category_create_post = [
 ];
 
 // Display category delete form on GET.
-exports.category_delete_get = function(req, res) {
-    res.render("category_delete", { title: "Delete post" });
+exports.category_delete_get = function(req, res, next) {
+    async.parallel({
+        category: function(callback) {
+            Category.findById(req.params.id).exec(callback);
+        }, 
+        game_list: function(callback) {
+            Game.find({"category": req.params.id}, "title platform image")
+                .populate("platform")
+                .exec(callback);
+        }
+    }, function(err, results) {
+        if(err) { return next(err);}
+        if(results.category == null) {
+            var err = new Error("Category not found");
+            err.status = 404;
+            return next(err);
+        }
+        // Success
+        // Sort game list
+        results.game_list.sort((a,b) => {
+            return (a.title < b.title) ? -1 : (a.title > b.title) ? 1 : 0;
+        });
+        res.render("category_delete", { title: "Delete Category", category: results.category, game_list: results.game_list  });
+    });
 };
 
 // Handle category delete on POST.
-exports.category_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Category delete POST');
+exports.category_delete_post = function(req, res, next) {
+    async.parallel({
+        category: function(callback) {
+            Category.findById(req.body.categoryid).exec(callback);
+        }, 
+        game_list: function(callback) {
+            Game.find({"category": req.body.categoryid}, "title platform image")
+                .populate("platform")
+                .exec(callback);
+        }
+    }, function(err, results) {
+        if(err) { return next(err);}
+        // Success
+        if(results.game_list.length > 0) {
+            // Category has dependencies, render back delete page
+            res.render("category_delete", { title: "Delete Category", category: results.category, game_list: results.game_list  });
+            return;
+        } else {
+            Category.findByIdAndRemove(req.body.categoryid, function deleteCategory(err) {
+                if(err) { return next(err); }
+                // Success, redirect to all categories page
+                res.redirect("/inventory/categories");
+            });
+        }
+
+       
+    });
 };
 
 // Display category update form on GET.
