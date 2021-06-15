@@ -25,7 +25,7 @@ block content
                             label.form-label Platform
                             select#platform.form-select(name="platform")
                                 each platform in platform_list
-                                    option(value=platform._id selected=( undefined===game ? false : game.platform === platform.name ? true : false )) #{platform.name}
+                                    option(value=platform._id selected=( undefined===game ? false : game.platform.name === platform.name ? true : false )) #{platform.name}
                     div.form-group.mb-3
                             label.form-label Category
                             div.d-flex

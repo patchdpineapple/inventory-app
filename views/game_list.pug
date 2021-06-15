@@ -12,13 +12,8 @@ block content
                             a(href=game.url) #{game.title} 
                             | (#{game.platform.name})
                             if game.category
-                                    each category, index in game.category
-                                        if game.category.length == 1
-                                            span [#{category.name}]
-                                        else if index == 0
-                                            span [#{category.name},&nbsp;
-                                        else if index == game.category.length - 1
-                                            span #{category.name}]
+                                    each category in game.category
+                                       span [#{category.name}]
 
                     else
                         li There are no games.

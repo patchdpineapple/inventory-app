@@ -130,9 +130,9 @@ exports.game_create_post = [
                         results.category_list[i].checked='true';
                     }
                 }
-                res.render("game_form", { title: "Add Game", platform_list: results.platform_list, category_list: results.category_list, errors: errors.array()});
+                res.render("game_form", { title: "Add Game", game: game, platform_list: results.platform_list, category_list: results.category_list, errors: errors.array()});
             });
-
+            return;
         } else {
             // No errors
             game.save(function(err){
@@ -168,11 +168,127 @@ exports.game_delete_post = function(req, res, next) {
 };
 
 // Display game update form on GET.
-exports.game_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game update GET');
+exports.game_update_get = function(req, res, next) {
+    async.parallel({
+        game: function(callback) {
+            Game.findById(req.params.id)
+            .populate("platform")
+            .populate("category")
+            .exec(callback);
+        }, 
+        platform_list: function(callback) {
+            Platform.find().exec(callback);
+        }, 
+        category_list: function(callback) {
+            Category.find().exec(callback);
+        }, 
+    }, function(err, results){
+        if(err) { return next(err); }
+        if(results.game == null) {
+            var err = new Error('Game not found');
+            err.status = 404;
+            return next(err);
+        }
+        //Success
+        
+        // Mark our selected categories as checked.
+        for (let i = 0; i < results.category_list.length; i++) {
+            for (let x = 0; x < results.game.category.length; x++) {
+                if(results.game.category[x]._id.toString() == results.category_list[i]._id.toString()) {
+                    results.category_list[i].checked = "true";
+                }
+            }
+        }
+        // Sort
+        results.platform_list.sort((a,b) => {
+            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+        });
+        results.category_list.sort((a,b) => {
+            return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+        });
+        // Render page
+        res.render("game_form", { title: "Update Game", game: results.game, platform_list: results.platform_list, category_list: results.category_list});
+    });
 };
 
 // Handle game update on POST.
-exports.game_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game update POST');
-};
+exports.game_update_post = [
+
+    // Convert categories to array
+    (req, res, next) => {
+        if(!(req.body.category instanceof Array)){
+            if(typeof req.body.category ==='undefined')
+                req.body.category = [];
+            else
+                req.body.category = new Array(req.body.category);
+        }
+        next();
+    },
+
+    // Validate and sanitize
+    body("title", "Title must not be empty").trim().isLength({min:1}).escape(),
+    body("description", "Description must not be empty").trim().isLength({min:1}).escape(),
+    body("price", "Invalid price").trim().isInt({min:0, allow_leading_zeroes: false}).escape(),
+    body("status", "Status must not be empty").trim().isLength({min:1}).escape(),
+    body('release', 'Invalid release date').optional({ checkFalsy: true }).isISO8601().toDate(),
+    body("platform", "Platform must not be empty").trim().isLength({min:1}).escape(),
+    body("category.*").escape(),
+
+
+    
+    // Process request
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        // Create new game instance
+        let game = new Game({
+            title: req.body.title,
+            description: req.body.description,
+            price: req.body.price,
+            status: req.body.status,
+            developer: req.body.developer,
+            release: req.body.release,
+            platform: req.body.platform,
+            category: (typeof req.body.category==='undefined') ? [] : req.body.category,
+            image: "",
+            _id: req.params.id
+        });
+
+        if(!errors.isEmpty()) {
+            // Error found. go back to form with sanitized post data
+            async.parallel({
+                platform_list: function(callback) {
+                    Platform.find().exec(callback);
+                }, 
+                category_list: function(callback) {
+                    Category.find().exec(callback);
+                }, 
+            }, function(err, results){
+                if(err) { return next(err); }
+                // Success
+                // Sort platforms and categories
+                results.platform_list.sort((a,b) => {
+                    return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+                });
+                results.category_list.sort((a,b) => {
+                    return (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0;
+                });
+                // Mark our selected categories as checked.
+                for (let i = 0; i < results.category_list.length; i++) {
+                    if (game.category.indexOf(results.category_list[i]._id) > -1) {
+                        results.category_list[i].checked='true';
+                    }
+                }
+                res.render("game_form", { title: "Update Game", game: game, platform_list: results.platform_list, category_list: results.category_list, errors: errors.array()});
+            });
+            return;
+        } else {
+            // No errors
+            Game.findByIdAndUpdate(req.params.id, game, {}, function updateGame(err, updatedgame) {
+                if(err) { return next(err); }
+                // Success, redirect to game detail page
+                res.redirect(updatedgame.url);
+            });
+        }
+    }
+];
