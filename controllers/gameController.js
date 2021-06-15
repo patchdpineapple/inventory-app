@@ -147,13 +147,24 @@ exports.game_create_post = [
 ];
 
 // Display game delete form on GET.
-exports.game_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game delete GET');
+exports.game_delete_get = function(req, res, next) {
+    Game.findById(req.params.id).exec(function(err, game) {
+        if(err) { return next(err); }
+        if(game == null) {
+            res.redirect("/inventory/games");
+        }
+        // Success
+        res.render("game_delete", { title: "Delete Game", game: game});
+    });
 };
 
 // Handle game delete on POST.
-exports.game_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Game delete POST');
+exports.game_delete_post = function(req, res, next) {
+    Game.findByIdAndRemove(req.body.gameid, function deleteGame(err) {
+        if(err) { return next(err); }
+        // Success, redirect to all games page
+        res.redirect("/inventory/games");
+    });
 };
 
 // Display game update form on GET.

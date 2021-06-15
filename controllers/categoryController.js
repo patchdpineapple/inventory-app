@@ -105,9 +105,7 @@ exports.category_delete_get = function(req, res, next) {
     }, function(err, results) {
         if(err) { return next(err);}
         if(results.category == null) {
-            var err = new Error("Category not found");
-            err.status = 404;
-            return next(err);
+            res.redirect("/inventory/categories");
         }
         // Success
         // Sort game list

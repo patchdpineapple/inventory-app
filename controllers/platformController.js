@@ -105,9 +105,7 @@ exports.platform_delete_get = function(req, res, next) {
     }, function(err, results) {
         if(err) { return next(err);}
         if(results.platform == null) {
-            var err = new Error("Platform not found");
-            err.status = 404;
-            return next(err);
+            res.redirect("/inventory/platforms");
         }
         // Success
         // Sort game list
@@ -136,9 +134,9 @@ exports.platform_delete_post = function(req, res, next) {
             // Platform has games, render back delete page
             res.render("platform_delete", { title: "Delete Platform", platform: results.platform, game_list: results.game_list  });
         } else {
-            Platform.findByIdAndRemove(req.body.platformid, function deleteCategory(err) {
+            Platform.findByIdAndRemove(req.body.platformid, function deletePlatform(err) {
                 if(err) { return next(err); }
-                // Success, redirect to all categories page
+                // Success, redirect to all platforms page
                 res.redirect("/inventory/platforms");
             });
         }
