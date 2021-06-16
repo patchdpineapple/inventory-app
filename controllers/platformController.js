@@ -145,11 +145,57 @@ exports.platform_delete_post = function(req, res, next) {
 };
 
 // Display platform update form on GET.
-exports.platform_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform update GET');
+exports.platform_update_get = function(req, res, next) {
+    Platform.findById(req.params.id)
+        .exec(function(err, platform) {
+            if(err) { return next(err); }
+            if(platform == null) {
+                var err = new Error('Platform not found');
+                err.status = 404;
+                return next(err);
+            }
+            // Success
+            res.render('platform_form', { title: "Update Platform", platform: platform });
+        });
 };
 
 // Handle platform update on POST.
-exports.platform_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Platform update POST');
-};
+exports.platform_update_post = [
+
+    //validate and sanitize
+    body("name", "Platform name not found").trim().isLength({min:1}).escape(),
+
+    //process request
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        //create new model instance
+        const platform = new Platform({
+            name: req.body.name,
+            _id: req.params.id
+        });
+
+        if(!errors.isEmpty()) {
+            res.render("platform_form", { title: "Update Category", platform: platform, errors: errors.array()});
+            return;
+        }
+        else {
+            //find if category name already exists
+            Platform.findOne({"name":req.body.name})
+            .exec(function(err, found_platform) {
+                if(err) { return next(err); }
+                if(found_platform) {
+                    res.redirect(found_platform.url);
+                } else {
+                    Platform.findByIdAndUpdate(req.params.id, platform, {}, function updatePlatform(err, updatedplatform) {
+                        if(err) { return next(err); }
+                        //Update success, redirect to detail page
+                        res.redirect(updatedplatform.url);
+                    });
+                }
+
+            });
+        }
+
+    }
+];
