@@ -5,3 +5,4 @@ The task is to create an Inventory Management app for an imaginary store using E
 
 #### Live preview
 
+Click [https://blooming-beach-19795.herokuapp.com](https://blooming-beach-19795.herokuapp.com)
